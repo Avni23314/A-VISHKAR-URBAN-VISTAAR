@@ -143,3 +143,12 @@
     color: var(--color-foreground);
   }
 }
+
+.map-dark-tiles {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
+}
+
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(15, 20, 28, 0.8);
+  color: var(--color-muted-foreground);
+}
