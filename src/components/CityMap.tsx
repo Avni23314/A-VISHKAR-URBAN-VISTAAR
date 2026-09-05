@@ -45,9 +45,11 @@ export default function CityMap({
       style={{ background: "#0b1017" }}
     >
       <TileLayer
-        attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        attribution="&copy; OpenStreetMap contributors"
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        className="map-dark-tiles"
       />
+
 
       {layers.road &&
         roadSegments.map((s) => (
