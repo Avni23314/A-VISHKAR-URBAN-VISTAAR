@@ -592,7 +592,15 @@ function MetaLine({ k, v, tone }: { k: string; v: string; tone?: string }) {
   );
 }
 
-function Field({ label, value, color }: { label: string; value: string; color?: string }) {
+function Field({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string;
+  color?: string | undefined;
+}) {
   return (
     <div className="rounded border border-border/60 bg-background/70 px-1.5 py-1">
       <div className="text-[8px] uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
