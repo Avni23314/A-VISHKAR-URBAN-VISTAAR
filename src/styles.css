@@ -152,3 +152,73 @@
   background: rgba(15, 20, 28, 0.8);
   color: var(--color-muted-foreground);
 }
+
+.road-health-stroke {
+  transition:
+    stroke 0.9s ease,
+    stroke-width 0.6s ease;
+}
+
+.road-hero {
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.traffic-stroke {
+  transition: stroke 0.9s ease;
+  stroke-dasharray: 10 6;
+  animation: traffic-flow 2.4s linear infinite;
+}
+
+@keyframes traffic-flow {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+.event-pulse {
+  animation: event-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes event-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.stage-in {
+  animation: stage-in 0.45s ease-out;
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.alert-flash {
+  animation: alert-flash 1.4s ease-in-out 3;
+}
+
+@keyframes alert-flash {
+  50% {
+    background-color: rgba(244, 63, 94, 0.3);
+  }
+}
+
+.scanline {
+  animation: scanline 3s linear infinite;
+}
+
+@keyframes scanline {
+  from {
+    transform: translateY(-2rem);
+  }
+  to {
+    transform: translateY(5rem);
+  }
+}
