@@ -207,11 +207,15 @@
 @keyframes alert-flash {
   0%,
   100% {
-    background-color: rgba(244, 63, 94, 0.14);
+    background-color: rgb(244 63 94 / 14%);
   }
   50% {
-    background-color: rgba(244, 63, 94, 0.32);
+    background-color: rgb(244 63 94 / 34%);
   }
+}
+
+.alert-flash {
+  background-color: rgb(244 63 94 / 14%);
 }
 
 .scanline {

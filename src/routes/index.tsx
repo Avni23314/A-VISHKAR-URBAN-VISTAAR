@@ -406,7 +406,8 @@ function Dashboard() {
           {alert && (
             <button
               onClick={() => selectEvent(alert)}
-              className="alert-flash w-full border-b border-rose-500/40 bg-rose-500/15 px-4 py-2 text-left"
+              className="alert-flash w-full border-b px-4 py-2 text-left"
+              style={{ borderColor: "rgba(244,63,94,0.4)" }}
             >
               <div className="font-mono text-[10px] font-bold tracking-[0.2em] text-rose-400">
                 ● HIGH PRIORITY · ACTION REQUIRED
