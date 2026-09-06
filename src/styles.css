@@ -205,8 +205,12 @@
 }
 
 @keyframes alert-flash {
+  0%,
+  100% {
+    background-color: rgba(244, 63, 94, 0.14);
+  }
   50% {
-    background-color: rgba(244, 63, 94, 0.3);
+    background-color: rgba(244, 63, 94, 0.32);
   }
 }
 
