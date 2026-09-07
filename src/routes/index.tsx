@@ -223,14 +223,26 @@ function Dashboard() {
 
     at(18500, () => {
       setStage({
+        label: "WORK ORDER DISPATCHED",
+        text: "SEG-021 assigned to PWD South · Crew 3 · safety case to DTC Safety Response",
+        tone: "#22c55e",
+      });
+      setOrders({
+        [HERO_EVENT_ID]: { team: "PWD-S3", status: "ASSIGNED", eta: "4h" },
+        [safetyEvent.id]: { team: "DTC-SAF", status: "IN PROGRESS", eta: "30m" },
+      });
+    });
+
+    at(21500, () => {
+      setStage({
         label: "MONITORING",
-        text: "Incidents retained · authorities notified · fleet continues sensing",
+        text: "Work orders live · authorities notified · fleet continues sensing",
         tone: "#22d3ee",
       });
       setDemoRunning(false);
     });
 
-    at(21000, () => setStage(null));
+    at(24000, () => setStage(null));
   }, [addObservation, selectEvent]);
 
   return (
