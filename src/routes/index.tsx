@@ -81,16 +81,55 @@ function Dashboard() {
   const [alert, setAlert] = useState<UrbanEvent | null>(null);
   const [demoRunning, setDemoRunning] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [buses, setBuses] = useState<LiveBus[]>(busPositions);
+  const [orders, setOrders] = useState<Record<string, { team: string; status: WorkStatus; eta: string }>>(
+    {},
+  );
 
   useEffect(() => setMounted(true), []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
+  // Buses move along their real DTC route alignments.
+  useEffect(() => {
+    let tick = 0;
+    const id = setInterval(() => {
+      tick += 1;
+      setBuses(busesAt(tick));
+    }, 1200);
+    return () => clearInterval(id);
+  }, []);
+
+  const heroBus = buses.find((b) => b.id === HERO_BUS_ID) ?? buses[0]!;
   const selected = events.find((e) => e.id === selectedId) ?? null;
   const criticalCount = events.filter((e) => e.severity === "Critical").length;
   const confirmedCount = events.filter((e) => e.status === "CONFIRMED").length;
+  const dispatchable = events.filter((e) => e.status !== "UNVERIFIED");
   const avgHealth = Math.round(
     roadSegments.reduce((a, s) => a + (healthOverrides[s.id] ?? s.health), 0) / roadSegments.length,
   );
+
+  const assign = useCallback((eventId: string, team: string) => {
+    setOrders((o) => ({
+      ...o,
+      [eventId]: {
+        team,
+        status: o[eventId]?.status && o[eventId]!.status !== "UNASSIGNED" ? o[eventId]!.status : "ASSIGNED",
+        eta: o[eventId]?.eta ?? "4h",
+      },
+    }));
+  }, []);
+
+  const setOrderStatus = useCallback((eventId: string, status: WorkStatus) => {
+    setOrders((o) => ({
+      ...o,
+      [eventId]: {
+        team: o[eventId]?.team ?? maintenanceTeams[0]!.id,
+        status,
+        eta: o[eventId]?.eta ?? "4h",
+      },
+    }));
+  }, []);
+
 
   const selectEvent = useCallback((e: UrbanEvent) => {
     setSelectedId(e.id);
