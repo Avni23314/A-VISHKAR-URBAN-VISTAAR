@@ -308,6 +308,7 @@ function Dashboard() {
               <CityMap
                 layers={layers}
                 events={events}
+                buses={buses}
                 selectedId={selectedId}
                 focus={focus}
                 healthOverrides={healthOverrides}
