@@ -293,7 +293,7 @@ function Dashboard() {
 
       {/* KPI STRIP */}
       <div className="grid grid-cols-5 gap-2 border-b border-border px-5 py-2">
-        <Kpi label="Active Buses" value={String(busPositions.length)} tone="#22d3ee" />
+        <Kpi label="Active Buses" value={String(buses.length)} tone="#22d3ee" />
         <Kpi label="Active Events" value={String(events.length)} tone="#e2e8f0" />
         <Kpi label="Critical" value={String(criticalCount)} tone="#ef4444" />
         <Kpi label="Confirmed" value={String(confirmedCount)} tone="#22c55e" />
