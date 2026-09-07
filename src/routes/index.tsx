@@ -2,17 +2,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   baseEvents,
+  busesAt,
   busPositions,
   conditionColor,
   conditionOf,
   heroEvent,
+  HERO_BUS_ID,
   HERO_EVENT_ID,
+  maintenanceTeams,
   roadSegments,
   safetyEvent,
   severityColor,
   trafficColor,
+  workStatusColor,
+  type LiveBus,
   type Priority,
   type UrbanEvent,
+  type WorkStatus,
 } from "@/lib/mock-data";
 import type { Layers } from "@/components/CityMap";
 
