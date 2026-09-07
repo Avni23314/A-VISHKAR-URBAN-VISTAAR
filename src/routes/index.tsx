@@ -166,16 +166,17 @@ function Dashboard() {
     setHighlightSegment(null);
     setSelectedId(null);
     setAlert(null);
-    setFocus([28.6108, 77.2295]);
+    setOrders({});
+    setFocus([28.5245, 77.2066]);
 
     const at = (ms: number, fn: () => void) => timers.current.push(setTimeout(fn, ms));
 
-    setStage({ label: "MONITORING", text: "Fleet online · 7 buses streaming edge AI", tone: "#22d3ee" });
+    setStage({ label: "MONITORING", text: "Fleet online · 7 DTC buses streaming edge AI", tone: "#22d3ee" });
 
     at(3000, () => {
       setStage({
         label: "AI DETECTION",
-        text: "Pothole cluster detected by DTC-102 · Route 874 · confidence 91%",
+        text: "Pothole cluster detected by DTC-102 · Route 764 (MB Road) · confidence 91%",
         tone: "#f97316",
       });
       selectEvent(heroEvent);
