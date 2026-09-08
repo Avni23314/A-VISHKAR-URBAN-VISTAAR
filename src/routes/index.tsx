@@ -380,9 +380,10 @@ function Dashboard() {
                   ● REC
                 </span>
               </div>
-              <MetaLine k="BUS" v="DTC-102" />
-              <MetaLine k="ROUTE" v="874" />
-              <MetaLine k="CAMERA" v="FRONT" />
+              <MetaLine k="BUS" v={heroBus.id} />
+              <MetaLine k="ROUTE" v={`${heroBus.route} · ${heroBus.nextStop}`} />
+              <MetaLine k="GPS" v={`${heroBus.lat.toFixed(4)}, ${heroBus.lng.toFixed(4)}`} />
+              <MetaLine k="SPEED" v={`${heroBus.speed} KM/H`} />
               <MetaLine k="STATUS" v="● PROCESSING" tone="#22d3ee" />
             </div>
 
@@ -601,8 +602,119 @@ function Dashboard() {
                     {e.status === "CONFIRMED" ? `✓ CONFIRMED · ${e.confirmedBy} BUSES` : "ACTION REQUIRED"}
                   </div>
                 )}
+                {orders[e.id] && (
+                  <div
+                    className="mt-1 font-mono text-[9px] tracking-[0.14em]"
+                    style={{ color: workStatusColor[orders[e.id]!.status] }}
+                  >
+                    ⚑ {orders[e.id]!.team} · {orders[e.id]!.status}
+                  </div>
+                )}
               </button>
             ))}
+          </div>
+
+          {/* MAINTENANCE DISPATCH */}
+          <div className="max-h-[38%] shrink-0 overflow-y-auto border-t border-border bg-background/60">
+            <div className="sticky top-0 flex items-center justify-between border-b border-border bg-card px-4 py-1.5">
+              <span className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground">
+                MAINTENANCE DISPATCH
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                {Object.values(orders).filter((o) => o.status !== "RESOLVED").length} OPEN
+              </span>
+            </div>
+
+            <div className="space-y-1.5 p-2.5">
+              {dispatchable.length === 0 && (
+                <p className="text-[10px] text-muted-foreground">
+                  Confirmed events become work orders here.
+                </p>
+              )}
+              {dispatchable.map((e) => {
+                const order = orders[e.id];
+                const status: WorkStatus = order?.status ?? "UNASSIGNED";
+                return (
+                  <div key={e.id} className="rounded-lg border border-border bg-card p-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        onClick={() => selectEvent(e)}
+                        className="truncate text-left text-[11px] font-medium hover:underline"
+                      >
+                        {e.type}
+                      </button>
+                      <span
+                        className="shrink-0 rounded-full px-2 py-0.5 font-mono text-[9px]"
+                        style={{ background: `${workStatusColor[status]}22`, color: workStatusColor[status] }}
+                      >
+                        {status}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 font-mono text-[9px] text-muted-foreground">
+                      {e.id} · {e.segmentId ?? "NO SEGMENT"} · {e.priority}
+                    </div>
+
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <select
+                        value={order?.team ?? ""}
+                        onChange={(ev) => assign(e.id, ev.target.value)}
+                        className="min-w-0 flex-1 rounded border border-border bg-background px-1.5 py-1 font-mono text-[9px] text-foreground"
+                      >
+                        <option value="" disabled>
+                          ASSIGN TEAM…
+                        </option>
+                        {maintenanceTeams.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={order?.eta ?? "4h"}
+                        onChange={(ev) =>
+                          setOrders((o) => ({
+                            ...o,
+                            [e.id]: {
+                              team: o[e.id]?.team ?? maintenanceTeams[0]!.id,
+                              status: o[e.id]?.status ?? "ASSIGNED",
+                              eta: ev.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded border border-border bg-background px-1.5 py-1 font-mono text-[9px] text-foreground"
+                      >
+                        {["30m", "2h", "4h", "24h", "72h"].map((t) => (
+                          <option key={t} value={t}>
+                            ETA {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="mt-1.5 grid grid-cols-3 gap-1">
+                      {(["ASSIGNED", "IN PROGRESS", "RESOLVED"] as const).map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => setOrderStatus(e.id, s)}
+                          className={`rounded border py-1 font-mono text-[8px] tracking-[0.1em] transition-colors ${
+                            status === s
+                              ? "border-transparent"
+                              : "border-border text-muted-foreground hover:bg-secondary/60"
+                          }`}
+                          style={
+                            status === s
+                              ? { background: `${workStatusColor[s]}26`, color: workStatusColor[s] }
+                              : undefined
+                          }
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </aside>
       </main>
