@@ -380,9 +380,10 @@ function Dashboard() {
                   ● REC
                 </span>
               </div>
-              <MetaLine k="BUS" v="DTC-102" />
-              <MetaLine k="ROUTE" v="874" />
-              <MetaLine k="CAMERA" v="FRONT" />
+              <MetaLine k="BUS" v={heroBus.id} />
+              <MetaLine k="ROUTE" v={`${heroBus.route} · ${heroBus.nextStop}`} />
+              <MetaLine k="GPS" v={`${heroBus.lat.toFixed(4)}, ${heroBus.lng.toFixed(4)}`} />
+              <MetaLine k="SPEED" v={`${heroBus.speed} KM/H`} />
               <MetaLine k="STATUS" v="● PROCESSING" tone="#22d3ee" />
             </div>
 
