@@ -5,11 +5,9 @@ import {
   busPositions,
   conditionColor,
   conditionOf,
-  HERO_BUS_ID,
   roadSegments,
   severityColor,
   trafficColor,
-  type LiveBus,
   type UrbanEvent,
 } from "@/lib/mock-data";
 
@@ -32,7 +30,6 @@ function Focus({ target }: { target: [number, number] | null }) {
 export default function CityMap({
   layers,
   events,
-  buses = busPositions,
   selectedId,
   focus,
   healthOverrides,
@@ -41,7 +38,6 @@ export default function CityMap({
 }: {
   layers: Layers;
   events: UrbanEvent[];
-  buses?: LiveBus[];
   selectedId: string | null;
   focus: [number, number] | null;
   healthOverrides: Record<string, number>;
@@ -60,8 +56,8 @@ export default function CityMap({
 
   return (
     <MapContainer
-      center={[28.5900, 77.2200]}
-      zoom={11}
+      center={[28.6108, 77.2295]}
+      zoom={12}
       scrollWheelZoom
       zoomControl={false}
       className="h-full w-full"
@@ -120,25 +116,21 @@ export default function CityMap({
       })}
 
       {layers.buses &&
-        buses.map((b) => (
+        busPositions.map((b) => (
           <CircleMarker
             key={b.id}
             center={[b.lat, b.lng]}
-            radius={b.id === HERO_BUS_ID ? 7 : 5}
+            radius={b.id === "DTC-102" ? 7 : 5}
             pathOptions={{
               color: "#22d3ee",
               fillColor: "#22d3ee",
               fillOpacity: 0.9,
-              weight: b.id === HERO_BUS_ID ? 3 : 1,
+              weight: b.id === "DTC-102" ? 3 : 1,
             }}
           >
             <Tooltip>
               <span className="font-mono text-[11px]">
                 BUS {b.id} · ROUTE {b.route}
-                <br />
-                {b.routeName}
-                <br />
-                NEXT STOP {b.nextStop.toUpperCase()} · {b.speed} KM/H
               </span>
             </Tooltip>
           </CircleMarker>
