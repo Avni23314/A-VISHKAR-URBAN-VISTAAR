@@ -2,17 +2,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   baseEvents,
+  busesAt,
   busPositions,
   conditionColor,
   conditionOf,
   heroEvent,
+  HERO_BUS_ID,
   HERO_EVENT_ID,
+  maintenanceTeams,
   roadSegments,
   safetyEvent,
   severityColor,
   trafficColor,
+  workStatusColor,
+  type LiveBus,
   type Priority,
   type UrbanEvent,
+  type WorkStatus,
 } from "@/lib/mock-data";
 import type { Layers } from "@/components/CityMap";
 
@@ -75,16 +81,55 @@ function Dashboard() {
   const [alert, setAlert] = useState<UrbanEvent | null>(null);
   const [demoRunning, setDemoRunning] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [buses, setBuses] = useState<LiveBus[]>(busPositions);
+  const [orders, setOrders] = useState<Record<string, { team: string; status: WorkStatus; eta: string }>>(
+    {},
+  );
 
   useEffect(() => setMounted(true), []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
+  // Buses move along their real DTC route alignments.
+  useEffect(() => {
+    let tick = 0;
+    const id = setInterval(() => {
+      tick += 1;
+      setBuses(busesAt(tick));
+    }, 1200);
+    return () => clearInterval(id);
+  }, []);
+
+  const heroBus = buses.find((b) => b.id === HERO_BUS_ID) ?? buses[0]!;
   const selected = events.find((e) => e.id === selectedId) ?? null;
   const criticalCount = events.filter((e) => e.severity === "Critical").length;
   const confirmedCount = events.filter((e) => e.status === "CONFIRMED").length;
+  const dispatchable = events.filter((e) => e.status !== "UNVERIFIED");
   const avgHealth = Math.round(
     roadSegments.reduce((a, s) => a + (healthOverrides[s.id] ?? s.health), 0) / roadSegments.length,
   );
+
+  const assign = useCallback((eventId: string, team: string) => {
+    setOrders((o) => ({
+      ...o,
+      [eventId]: {
+        team,
+        status: o[eventId]?.status && o[eventId]!.status !== "UNASSIGNED" ? o[eventId]!.status : "ASSIGNED",
+        eta: o[eventId]?.eta ?? "4h",
+      },
+    }));
+  }, []);
+
+  const setOrderStatus = useCallback((eventId: string, status: WorkStatus) => {
+    setOrders((o) => ({
+      ...o,
+      [eventId]: {
+        team: o[eventId]?.team ?? maintenanceTeams[0]!.id,
+        status,
+        eta: o[eventId]?.eta ?? "4h",
+      },
+    }));
+  }, []);
+
 
   const selectEvent = useCallback((e: UrbanEvent) => {
     setSelectedId(e.id);
@@ -121,16 +166,17 @@ function Dashboard() {
     setHighlightSegment(null);
     setSelectedId(null);
     setAlert(null);
-    setFocus([28.6108, 77.2295]);
+    setOrders({});
+    setFocus([28.5245, 77.2066]);
 
     const at = (ms: number, fn: () => void) => timers.current.push(setTimeout(fn, ms));
 
-    setStage({ label: "MONITORING", text: "Fleet online · 7 buses streaming edge AI", tone: "#22d3ee" });
+    setStage({ label: "MONITORING", text: "Fleet online · 7 DTC buses streaming edge AI", tone: "#22d3ee" });
 
     at(3000, () => {
       setStage({
         label: "AI DETECTION",
-        text: "Pothole cluster detected by DTC-102 · Route 874 · confidence 91%",
+        text: "Pothole cluster detected by DTC-102 · Route 764 (MB Road) · confidence 91%",
         tone: "#f97316",
       });
       selectEvent(heroEvent);
@@ -177,14 +223,26 @@ function Dashboard() {
 
     at(18500, () => {
       setStage({
+        label: "WORK ORDER DISPATCHED",
+        text: "SEG-021 assigned to PWD South · Crew 3 · safety case to DTC Safety Response",
+        tone: "#22c55e",
+      });
+      setOrders({
+        [HERO_EVENT_ID]: { team: "PWD-S3", status: "ASSIGNED", eta: "4h" },
+        [safetyEvent.id]: { team: "DTC-SAF", status: "IN PROGRESS", eta: "30m" },
+      });
+    });
+
+    at(21500, () => {
+      setStage({
         label: "MONITORING",
-        text: "Incidents retained · authorities notified · fleet continues sensing",
+        text: "Work orders live · authorities notified · fleet continues sensing",
         tone: "#22d3ee",
       });
       setDemoRunning(false);
     });
 
-    at(21000, () => setStage(null));
+    at(24000, () => setStage(null));
   }, [addObservation, selectEvent]);
 
   return (
@@ -235,7 +293,7 @@ function Dashboard() {
 
       {/* KPI STRIP */}
       <div className="grid grid-cols-5 gap-2 border-b border-border px-5 py-2">
-        <Kpi label="Active Buses" value={String(busPositions.length)} tone="#22d3ee" />
+        <Kpi label="Active Buses" value={String(buses.length)} tone="#22d3ee" />
         <Kpi label="Active Events" value={String(events.length)} tone="#e2e8f0" />
         <Kpi label="Critical" value={String(criticalCount)} tone="#ef4444" />
         <Kpi label="Confirmed" value={String(confirmedCount)} tone="#22c55e" />
@@ -250,6 +308,7 @@ function Dashboard() {
               <CityMap
                 layers={layers}
                 events={events}
+                buses={buses}
                 selectedId={selectedId}
                 focus={focus}
                 healthOverrides={healthOverrides}
@@ -321,9 +380,10 @@ function Dashboard() {
                   ● REC
                 </span>
               </div>
-              <MetaLine k="BUS" v="DTC-102" />
-              <MetaLine k="ROUTE" v="874" />
-              <MetaLine k="CAMERA" v="FRONT" />
+              <MetaLine k="BUS" v={heroBus.id} />
+              <MetaLine k="ROUTE" v={`${heroBus.route} · ${heroBus.nextStop}`} />
+              <MetaLine k="GPS" v={`${heroBus.lat.toFixed(4)}, ${heroBus.lng.toFixed(4)}`} />
+              <MetaLine k="SPEED" v={`${heroBus.speed} KM/H`} />
               <MetaLine k="STATUS" v="● PROCESSING" tone="#22d3ee" />
             </div>
 
@@ -542,8 +602,119 @@ function Dashboard() {
                     {e.status === "CONFIRMED" ? `✓ CONFIRMED · ${e.confirmedBy} BUSES` : "ACTION REQUIRED"}
                   </div>
                 )}
+                {orders[e.id] && (
+                  <div
+                    className="mt-1 font-mono text-[9px] tracking-[0.14em]"
+                    style={{ color: workStatusColor[orders[e.id]!.status] }}
+                  >
+                    ⚑ {orders[e.id]!.team} · {orders[e.id]!.status}
+                  </div>
+                )}
               </button>
             ))}
+          </div>
+
+          {/* MAINTENANCE DISPATCH */}
+          <div className="max-h-[38%] shrink-0 overflow-y-auto border-t border-border bg-background/60">
+            <div className="sticky top-0 flex items-center justify-between border-b border-border bg-card px-4 py-1.5">
+              <span className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground">
+                MAINTENANCE DISPATCH
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                {Object.values(orders).filter((o) => o.status !== "RESOLVED").length} OPEN
+              </span>
+            </div>
+
+            <div className="space-y-1.5 p-2.5">
+              {dispatchable.length === 0 && (
+                <p className="text-[10px] text-muted-foreground">
+                  Confirmed events become work orders here.
+                </p>
+              )}
+              {dispatchable.map((e) => {
+                const order = orders[e.id];
+                const status: WorkStatus = order?.status ?? "UNASSIGNED";
+                return (
+                  <div key={e.id} className="rounded-lg border border-border bg-card p-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        onClick={() => selectEvent(e)}
+                        className="truncate text-left text-[11px] font-medium hover:underline"
+                      >
+                        {e.type}
+                      </button>
+                      <span
+                        className="shrink-0 rounded-full px-2 py-0.5 font-mono text-[9px]"
+                        style={{ background: `${workStatusColor[status]}22`, color: workStatusColor[status] }}
+                      >
+                        {status}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 font-mono text-[9px] text-muted-foreground">
+                      {e.id} · {e.segmentId ?? "NO SEGMENT"} · {e.priority}
+                    </div>
+
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <select
+                        value={order?.team ?? ""}
+                        onChange={(ev) => assign(e.id, ev.target.value)}
+                        className="min-w-0 flex-1 rounded border border-border bg-background px-1.5 py-1 font-mono text-[9px] text-foreground"
+                      >
+                        <option value="" disabled>
+                          ASSIGN TEAM…
+                        </option>
+                        {maintenanceTeams.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={order?.eta ?? "4h"}
+                        onChange={(ev) =>
+                          setOrders((o) => ({
+                            ...o,
+                            [e.id]: {
+                              team: o[e.id]?.team ?? maintenanceTeams[0]!.id,
+                              status: o[e.id]?.status ?? "ASSIGNED",
+                              eta: ev.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded border border-border bg-background px-1.5 py-1 font-mono text-[9px] text-foreground"
+                      >
+                        {["30m", "2h", "4h", "24h", "72h"].map((t) => (
+                          <option key={t} value={t}>
+                            ETA {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="mt-1.5 grid grid-cols-3 gap-1">
+                      {(["ASSIGNED", "IN PROGRESS", "RESOLVED"] as const).map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => setOrderStatus(e.id, s)}
+                          className={`rounded border py-1 font-mono text-[8px] tracking-[0.1em] transition-colors ${
+                            status === s
+                              ? "border-transparent"
+                              : "border-border text-muted-foreground hover:bg-secondary/60"
+                          }`}
+                          style={
+                            status === s
+                              ? { background: `${workStatusColor[s]}26`, color: workStatusColor[s] }
+                              : undefined
+                          }
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </aside>
       </main>
