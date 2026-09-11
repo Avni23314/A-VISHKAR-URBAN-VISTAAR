@@ -52,6 +52,7 @@ const layerMeta: { key: keyof Layers; label: string; dot: string }[] = [
   { key: "safety", label: "Safety", dot: "#a78bfa" },
   { key: "waterlogging", label: "Waterlogging", dot: "#60a5fa" },
   { key: "buses", label: "Buses", dot: "#22d3ee" },
+  { key: "liveTraffic", label: "Live Traffic", dot: "#f97316" },
 ];
 
 const priorityColor: Record<Priority, string> = {
@@ -71,6 +72,7 @@ function Dashboard() {
     safety: true,
     waterlogging: true,
     buses: true,
+    liveTraffic: true,
   });
   const [events, setEvents] = useState<UrbanEvent[]>(baseEvents);
   const [selectedId, setSelectedId] = useState<string | null>(null);
