@@ -12,7 +12,7 @@ The dashboard provides a centralized view of these events and road-condition int
 
 ---
 
-## 🚍 How It Works
+## How It Works
 
 Urban Pulse is built around a simple pipeline:
 
@@ -44,7 +44,7 @@ Urban Pulse is built around a simple pipeline:
 
 ---
 
-## 🖥️ Current MVP
+## Current MVP
 
 The current prototype focuses on a **single desktop dashboard** for demonstrating the intended urban-intelligence interface.
 
@@ -90,7 +90,7 @@ The current prototype focuses on a **single desktop dashboard** for demonstratin
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 * **React**
 * **TypeScript**
@@ -101,7 +101,7 @@ The current prototype focuses on a **single desktop dashboard** for demonstratin
 
 ---
 
-## 📁 Project Scope
+## Project Scope
 
 This repository currently contains the **frontend dashboard prototype**.
 
@@ -122,7 +122,7 @@ The prototype prioritizes a **working, reliable, presentation-ready frontend** w
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -156,13 +156,13 @@ The application will be available at the local development URL provided by Vite.
 
 ---
 
-## 🌐 Live Prototype
+## Live Prototype
 
 **Live App:** https://city-vista-ui.lovable.app
 
 ---
 
-## 🎯 SIH Prototype
+## SIH Prototype
 
 **Project:** Urban Pulse
 **Use Case:** Mobile urban sensing and road-condition intelligence
