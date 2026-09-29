@@ -1,160 +1,182 @@
 # Urban Pulse Dashboard
 
-Build ONLY the initial frontend shell for an SIH prototype called:
+### AI-Powered Mobile Urban Intelligence Platform
 
-AI-Powered Mobile Urban Intelligence Platform
+**Urban Pulse** is a Smart India Hackathon (SIH) prototype that transforms existing public-transport buses into **mobile AI sensing units** by combining their road-facing cameras with GPS data associated with each bus and edge intelligence.
 
-This is a Smart India Hackathon MVP.
+As buses move through the city, the platform is designed to continuously detect visible **road, traffic, and safety conditions** and convert them into structured **Urban Event Objects** containing:
 
-I have very limited time, so prioritize SPEED, RELIABILITY and a WORKING UI over completeness.
+> **Event Type · Location · Timestamp · Bus ID · Route ID · Confidence · Severity · Evidence**
 
-Do NOT build:
+The dashboard provides a centralized view of these events and road-condition intelligence, enabling validated observations to feed into **maintenance, safety, and hazard-response workflows**.
 
-- backend
+---
 
-- authentication
+## 🚍 How It Works
 
-- database
+Urban Pulse is built around a simple pipeline:
 
-- real APIs
+**Existing Public Buses**
+↓
+**Road-Facing Cameras + GPS + Edge Intelligence**
+↓
+**Urban Condition Detection**
+↓
+**Structured Urban Event Objects**
+↓
+**Multi-Bus Validation**
+↓
+**Road Intelligence & Response Workflows**
 
-- AI inference
+### Core principles
 
-- Google Maps API
+* **Observe wherever the fleet travels**
+  Roads are observed as buses follow their normal routes instead of relying only on inspection vehicles or public complaints.
 
-- MQTT
+* **Turn video into actionable intelligence**
+  Video is not the final output. Observations are converted into structured events that can be searched, mapped, prioritized, and acted upon.
 
-- advanced analytics
+* **Validate before escalation**
+  Repeated observations from independent buses increase confidence while helping suppress false positives and duplicate reports.
 
-- multiple pages
+* **Move from detection to decision**
+  Validated events continuously update road-condition intelligence and feed into maintenance, safety, and hazard-response workflows.
 
-Build ONE desktop dashboard page.
+---
 
-Use:
+## 🖥️ Current MVP
 
-- React
+The current prototype focuses on a **single desktop dashboard** for demonstrating the urban-intelligence interface.
 
-- TypeScript
+### Dashboard features
 
-- Tailwind CSS
+* Live-style system status indicator
+* KPI overview:
 
-- Leaflet / React Leaflet if available
+  * Active Buses
+  * Active Events
+  * Critical Events
+  * Confirmed Events
+  * Road Health
+* Interactive Delhi-focused map
+* Mock road-condition segments
+* Road-health visualization using condition-based colors:
 
-The dashboard should have:
+  * 🟢 Healthy
+  * 🟡 Attention
+  * 🟠 Poor
+  * 🔴 Critical
+* Mock urban event markers
+* Event detail cards containing:
 
-1. Header
+  * Event Type
+  * Severity
+  * Confidence
+  * Bus ID
+  * Route ID
+  * Timestamp
+  * Latitude
+  * Longitude
+* Layer controls for:
 
-   - "URBAN INTELLIGENCE"
+  * Road Health
+  * Traffic
+  * Safety
+  * Waterlogging
+  * Buses
+* Presentation-ready dashboard interface
 
-   - "AI-Powered Mobile Urban Intelligence Platform"
+> **Note:** The current MVP uses mock data to demonstrate the intended user experience and system workflow.
 
-   - system status: ONLINE
+---
 
-2. KPI row
+## 🏗️ Tech Stack
 
-   - Active Buses
+* **React**
+* **TypeScript**
+* **Tailwind CSS**
+* **Leaflet / React Leaflet**
+* **Vite**
+* **Mock data for the current MVP**
 
-   - Active Events
+---
 
-   - Critical
+## 📁 Project Scope
 
-   - Confirmed
+This repository currently contains the **frontend dashboard prototype**.
 
-   - Road Health
+The following are intentionally **not implemented in the current MVP**:
 
-3. Main content
+* Backend services
+* Authentication
+* Database
+* Production APIs
+* AI inference
+* Google Maps API
+* MQTT integration
+* Advanced analytics
+* Multi-page application architecture
+* Live bus/GPS feeds
 
-   - Large map occupying most of the screen
+The prototype prioritizes a **working, reliable, presentation-ready frontend** while keeping the architecture open for future integration.
 
-   - Right-side incident/event panel
+---
 
-4. Left-side compact layer control:
+## 🚀 Getting Started
 
-   - Road Health
+### Prerequisites
 
-   - Traffic
+Make sure you have:
 
-   - Safety
+* [Node.js](https://nodejs.org/)
+* npm
 
-   - Waterlogging
+### Installation
 
-   - Buses
+Clone the repository:
 
-5. Use mock data only.
-
-6. Add 10–15 mock road segments around Delhi.
-
-   Each segment must have:
-
-   - coordinates
-
-   - health score
-
-   - condition
-
-7. Color the road segments:
-
-   - green = healthy
-
-   - yellow = attention
-
-   - orange = poor
-
-   - red = critical
-
-8. Add 8–10 mock event markers.
-
-9. Clicking an event marker should open an event detail card showing:
-
-   - event type
-
-   - severity
-
-   - confidence
-
-   - bus ID
-
-   - route
-
-   - timestamp
-
-   - latitude
-
-   - longitude
-
-10. Make the UI polished and presentation-ready.
-
-IMPORTANT:
-
-Do not create any advanced features yet.
-
-Do not create additional pages.
-
-Do not over-engineer.
-
-Finish this dashboard completely before doing anything else.
-
-The app must load without errors.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://city-vista-ui.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f74e7881-2ce8-4e0c-a10c-2e0d289a1f3c).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
+```bash
 git clone <this-repository-url>
 cd <repository-name>
-npm i
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
+
+The application will be available at the local development URL provided by Vite.
+
+---
+
+## 🌐 Live Prototype
+
+**Live App:** https://city-vista-ui.lovable.app
+
+---
+
+## 🤖 Development with Lovable
+
+This prototype was initially developed using [Lovable](https://lovable.dev).
+
+The project can be continued in the [Lovable editor](https://lovable.dev/projects/f74e7881-2ce8-4e0c-a10c-2e0d289a1f3c).
+
+Lovable was used to accelerate frontend development and rapidly iterate on the dashboard interface while maintaining the project as a standard React codebase.
+
+---
+
+## 🎯 SIH Prototype
+
+**Project:** Urban Pulse
+**Use Case:** Mobile urban sensing and road-condition intelligence
+**Platform:** Public-transport buses as mobile sensing units
+**Current Stage:** Frontend MVP / Demonstration Prototype
+
+The prototype demonstrates how existing public-transport infrastructure can serve as a distributed sensing layer for urban road, traffic, and safety intelligence.
