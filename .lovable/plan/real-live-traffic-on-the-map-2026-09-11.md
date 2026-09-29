@@ -1,28 +1,114 @@
-# Real live traffic on the map
+# Google Maps Live Traffic Integration
 
-Swap the dashboard map for Google Maps with Google's own live traffic overlay, while keeping the dark command-center look and every existing layer, marker and panel.
+## Goal
 
-## What changes for you
+Replace the current Leaflet map with Google Maps and add Google's live traffic layer for Delhi, while preserving the existing dashboard functionality and dark command-center UI.
 
-- The map shows Google's real-time traffic colouring for Delhi (live congestion on actual roads), refreshed periodically.
-- A new "Live Traffic" toggle sits alongside Road Health, Traffic, Safety, Waterlogging and Buses in the left layer control.
-- The existing Road Health strokes, the simulated-traffic strokes, event markers, bus markers, hover tooltips, click-to-open event details, focus/fly-to and the demo sequence all keep working exactly as now.
-- The map keeps a dark styling close to the current one, so the dashboard still reads as a command center.
+## Scope
 
-## Setup needed from you
+### Map
 
-Google Maps must be connected to the project. I will open the connect card when you approve; you pick or create the connection there, nothing to paste in chat.
+* Replace the Leaflet implementation in `src/components/CityMap.tsx` with Google Maps JavaScript API.
+* Preserve the current dark map styling and existing zoom behavior.
+* Disable unnecessary default map UI.
+* Keep map POI icons non-clickable.
 
-Two things worth knowing:
-- Live traffic comes from Google, so it is real, not mock. The rest of the demo (buses, events, road health) stays simulated as before.
-- The managed Google key works on the Lovable preview and `*.lovable.app` addresses. On a custom domain it needs your own Google key.
+### Live Traffic
 
-## Technical notes
+Add a new **Live Traffic** layer to the existing layer controls.
 
-- Connect the `google_maps` connector; use `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY` with `loading=async`, a global `callback`, and the tracking ID as `channel`.
-- Rewrite `src/components/CityMap.tsx` to render a `google.maps.Map` (no `mapId`, `clickableIcons: false`, dark `styles` array, `disableDefaultUI` with the same zoom behaviour) and add `new google.maps.TrafficLayer()` bound/unbound by the new layer toggle.
-- Re-implement current features with the Maps JS equivalents: `google.maps.Polyline` for road-health and simulated-traffic strokes (same `conditionColor` / `trafficColor` values, hero weight/opacity), `google.maps.Marker` with `SymbolPath.CIRCLE` for events and buses, `InfoWindow` for the tooltip text, `panTo`/`setZoom` for the focus effect.
-- Load the map only on the client (dynamic import behind `ClientOnly`) so SSR is unaffected; remove Leaflet imports and CSS from the map path.
-- `src/routes/index.tsx` keeps its props contract; only the `Layers` type gains `liveTraffic` and the left control gains one row.
-- No backend, no server calls, no data-model changes; `src/lib/mock-data.ts` is untouched.
-- Verify with a Playwright run of the full RUN DEMO flow plus a console-error check.
+The layer should use Google's `TrafficLayer` and be independently toggled without affecting the other map layers.
+
+Live traffic will be sourced from Google. All other current dashboard data remains mock/simulated data.
+
+### Existing Map Features
+
+The Google Maps implementation must retain the current functionality:
+
+* Road Health segments
+* Simulated traffic segments
+* Event markers
+* Bus markers
+* Hover/tooltip information
+* Event detail cards
+* Focus/fly-to behavior
+* RUN DEMO sequence
+* Existing layer controls
+
+Map visualizations should retain the current condition and traffic color mappings.
+
+## Data
+
+No changes to the existing mock-data structure are required.
+
+`src/lib/mock-data.ts` remains unchanged.
+
+Current data sources:
+
+| Data              | Source                   |
+| ----------------- | ------------------------ |
+| Live Traffic      | Google Maps TrafficLayer |
+| Road Health       | Mock data                |
+| Simulated Traffic | Mock data                |
+| Events            | Mock data                |
+| Buses             | Mock data                |
+
+## Technical Approach
+
+### Google Maps
+
+Use the Google Maps JavaScript API with:
+
+* `google.maps.Map`
+* `google.maps.TrafficLayer`
+* `google.maps.Polyline`
+* `google.maps.Marker`
+* `google.maps.InfoWindow`
+
+Use `SymbolPath.CIRCLE` for event and bus markers.
+
+Use `panTo()` and `setZoom()` for the existing focus behavior.
+
+### API Configuration
+
+Use the Google Maps connector and:
+
+`VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`
+
+Load the Maps API asynchronously with:
+
+* `loading=async`
+* Global callback
+* Tracking ID passed through `channel`
+
+The managed key supports the Lovable preview and `*.lovable.app` environments. Custom-domain deployment requires a Google Maps key configured for that domain.
+
+### Client-Side Loading
+
+Google Maps must only be initialized on the client to avoid SSR issues.
+
+Use `ClientOnly` for the map component and remove the existing Leaflet imports and map-specific CSS from the active implementation.
+
+### Application State
+
+Extend the existing `Layers` type in `src/routes/index.tsx` with:
+
+`liveTraffic`
+
+Add the corresponding layer-control entry and use it to bind/unbind the `TrafficLayer`.
+
+No backend, server-side calls, authentication, database, or data-model changes are required.
+
+## Acceptance Criteria
+
+The feature is complete when:
+
+* Google Maps replaces the current Leaflet map.
+* Delhi's Google live traffic layer can be toggled independently.
+* Existing road-health and simulated-traffic visualizations remain functional.
+* Event and bus markers retain their current behavior.
+* Event details and focus/fly-to interactions continue to work.
+* RUN DEMO completes without breaking map state.
+* Existing layer controls continue to work.
+* No console errors are introduced.
+* The application loads successfully in the supported preview/deployment environment.
