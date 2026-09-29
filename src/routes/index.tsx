@@ -582,7 +582,12 @@ function Dashboard() {
             </div>
           )}
 
-          <div className="flex items-center justify-between border-b border-border px-4 py-1.5">
+          <div
+            ref={feedRef}
+            className={`flex items-center justify-between border-b border-border px-4 py-1.5 transition-shadow ${
+              flashPanel === "feed" ? "shadow-[inset_0_0_0_1px_var(--color-primary)]" : ""
+            }`}
+          >
             <span className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground">
               EVENT FEED
             </span>
@@ -641,7 +646,12 @@ function Dashboard() {
           </div>
 
           {/* MAINTENANCE DISPATCH */}
-          <div className="max-h-[38%] shrink-0 overflow-y-auto border-t border-border bg-background/60">
+          <div
+            ref={dispatchRef}
+            className={`max-h-[38%] shrink-0 overflow-y-auto border-t border-border bg-background/60 transition-shadow ${
+              flashPanel === "dispatch" ? "shadow-[inset_0_0_0_1px_var(--color-primary)]" : ""
+            }`}
+          >
             <div className="sticky top-0 flex items-center justify-between border-b border-border bg-card px-4 py-1.5">
               <span className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground">
                 MAINTENANCE DISPATCH
