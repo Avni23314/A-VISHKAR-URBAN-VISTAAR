@@ -87,6 +87,16 @@ function Dashboard() {
   const [orders, setOrders] = useState<Record<string, { team: string; status: WorkStatus; eta: string }>>(
     {},
   );
+  const feedRef = useRef<HTMLDivElement>(null);
+  const dispatchRef = useRef<HTMLDivElement>(null);
+  const [flashPanel, setFlashPanel] = useState<"feed" | "dispatch" | null>(null);
+
+  const jumpTo = useCallback((panel: "feed" | "dispatch") => {
+    const el = panel === "feed" ? feedRef.current : dispatchRef.current;
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setFlashPanel(panel);
+    setTimeout(() => setFlashPanel(null), 1600);
+  }, []);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
@@ -268,6 +278,20 @@ function Dashboard() {
               Real-time geospatial intelligence from the public transport fleet
             </p>
           </div>
+          <nav className="hidden items-center gap-1.5 border-l border-border pl-5 md:flex" aria-label="Dashboard sections">
+            <button
+              onClick={() => jumpTo("feed")}
+              className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-[10px] tracking-[0.18em] text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
+            >
+              EVENT FEED
+            </button>
+            <button
+              onClick={() => jumpTo("dispatch")}
+              className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-[10px] tracking-[0.18em] text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
+            >
+              MAINTENANCE DISPATCH
+            </button>
+          </nav>
         </div>
 
         <div className="flex items-center gap-3">
