@@ -28,7 +28,7 @@ Urban Pulse is built around a simple pipeline:
 ↓
 **Road Intelligence & Response Workflows**
 
-### Core principles
+### Core Principles
 
 * **Observe wherever the fleet travels**
   Roads are observed as buses follow their normal routes instead of relying only on inspection vehicles or public complaints.
@@ -46,11 +46,11 @@ Urban Pulse is built around a simple pipeline:
 
 ## 🖥️ Current MVP
 
-The current prototype focuses on a **single desktop dashboard** for demonstrating the urban-intelligence interface.
+The current prototype focuses on a **single desktop dashboard** for demonstrating the intended urban-intelligence interface.
 
-### Dashboard features
+### Dashboard Features
 
-* Live-style system status indicator
+* System status indicator
 * KPI overview:
 
   * Active Buses
@@ -162,16 +162,6 @@ The application will be available at the local development URL provided by Vite.
 
 ---
 
-## 🤖 Development with Lovable
-
-This prototype was initially developed using [Lovable](https://lovable.dev).
-
-The project can be continued in the [Lovable editor](https://lovable.dev/projects/f74e7881-2ce8-4e0c-a10c-2e0d289a1f3c).
-
-Lovable was used to accelerate frontend development and rapidly iterate on the dashboard interface while maintaining the project as a standard React codebase.
-
----
-
 ## 🎯 SIH Prototype
 
 **Project:** Urban Pulse
@@ -179,4 +169,4 @@ Lovable was used to accelerate frontend development and rapidly iterate on the d
 **Platform:** Public-transport buses as mobile sensing units
 **Current Stage:** Frontend MVP / Demonstration Prototype
 
-The prototype demonstrates how existing public-transport infrastructure can serve as a distributed sensing layer for urban road, traffic, and safety intelligence.
+The prototype demonstrates how existing public-transport infrastructure can serve as a **distributed sensing layer for urban road, traffic, and safety intelligence**.
